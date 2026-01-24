@@ -1,30 +1,3 @@
-
-body{
- background:#0f172a;
- color:white;
- font-family:sans-serif;
- text-align:center;
-}
-.screen{
- max-width:420px;
- margin:auto;
- padding:20px;
-}
-button{
- padding:10px;
- margin:5px;
- border-radius:10px;
- border:none;
- background:#6366f1;
- color:white;
- font-size:16px;
-}
-#timer{
- font-size:48px;
- animation:pulse 1s infinite;
-}
-@keyframes pulse{
- 0%{opacity:1}
- 50%{opacity:0.5}
- 100%{opacity:1}
-}
+body{font-family:sans-serif;background:#111;color:#fff;text-align:center}
+button{padding:10px 20px;font-size:16px;border-radius:8px}
+input{padding:8px;margin:5px;border-radius:6px}

@@ -1,35 +1,23 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Thai SongTrivia PRO (Host)</title>
+<title>Thai SongTrivia - Host</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="firebase.js"></script>
 </head>
 <body>
-<div class="screen">
-<h1>🎵 Thai SongTrivia</h1>
-
-<select id="category">
-  <option value="tpop">T-POP</option>
-  <option value="90s">90s</option>
-  <option value="lukthung">ลูกทุ่ง</option>
-</select>
-
-<div id="room">ROOM: <span id="roomCode"></span></div>
-<div id="timer">10</div>
-
+<h1>🎵 Thai SongTrivia (HOST)</h1>
+<div id="room"></div>
+<button onclick="startRound()">▶️ เริ่มรอบ</button>
+<div id="timer">--</div>
 <div id="player"></div>
+<div id="players"></div>
 
-<button onclick="startGame()">▶️ เริ่มรอบ</button>
-<h2>📊 ตารางคะแนน</h2>
-<ul id="scoreboard"></ul>
-</div>
-
+<script src="firebase.js"></script>
+<script src="songs.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
 <script src="host.js"></script>
 </body>
 </html>

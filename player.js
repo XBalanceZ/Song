@@ -1,14 +1,16 @@
-
-let roomRef;
+let roomRef, playerName;
 
 function join(){
- const r=document.getElementById("room").value;
- const n=document.getElementById("name").value;
- roomRef=db.ref("rooms/"+r+"/players/"+n);
- roomRef.set({score:0});
+  const room = roomInput.value;
+  playerName = nameInput.value;
+  roomRef = db.ref("rooms/"+room);
+  roomRef.child("players/"+playerName).set({score:0});
+  document.getElementById("game").style.display="block";
 }
 
-function send(){
- const ans=document.getElementById("answer").value;
- roomRef.update({answer:ans,score:10});
+function sendAnswer(){
+  roomRef.child("answers/"+playerName).set({
+    text: answer.value,
+    time: Date.now()
+  });
 }

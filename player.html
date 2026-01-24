@@ -1,25 +1,22 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Thai SongTrivia Player</title>
+<title>Thai SongTrivia - Player</title>
 <link rel="stylesheet" href="style.css">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="firebase.js"></script>
 </head>
 <body>
-<div class="screen">
-<h1>🎮 Player</h1>
-<input id="room" placeholder="Room Code">
-<input id="name" placeholder="ชื่อ">
-<button onclick="join()">Join</button>
-
+<h2>📱 Player</h2>
+<input id="roomInput" placeholder="Room Code">
+<input id="nameInput" placeholder="ชื่อผู้เล่น">
+<button onclick="join()">เข้าร่วม</button>
+<div id="game" style="display:none">
 <input id="answer" placeholder="ชื่อเพลง / ศิลปิน">
-<button onclick="send()">ส่งคำตอบ</button>
+<button onclick="sendAnswer()">ส่งคำตอบ</button>
 </div>
-
+<script src="firebase.js"></script>
 <script src="player.js"></script>
 </body>
 </html>
