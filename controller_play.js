@@ -22,9 +22,14 @@ const unlockBtn = document.getElementById('unlockBtn');
 const tapToPlay = document.getElementById('tapToPlay');
 const waiting = document.getElementById('waiting');
 const resultEl = document.getElementById('result');
+const playersListEl = document.getElementById('playersList');
+const progressBar = document.getElementById('progressBar');
 
 let timerInterval = null;
 let currentQuestionRef = null;
+let answersRef = null;
+let playersRef = null;
+let playersState = {};
 
 if(!currentRoom){
   infoEl.innerText = "ไม่มีรหัสห้อง";
@@ -34,6 +39,23 @@ if(!currentRoom){
   db.ref("rooms/"+currentRoom+"/players/"+playerName).set({ name: playerName });
   waiting.classList.add('hidden');
   promptArea.classList.remove('hidden');
+  playersListEl.innerText = '';
+  // listen players and answers to show who answered and live scores
+  playersRef = db.ref("rooms/"+currentRoom+"/players");
+  playersRef.on('value', snap=>{
+    playersState = snap.val() || {};
+    renderPlayers();
+  });
+  answersRef = db.ref("rooms/"+currentRoom+"/answers");
+  answersRef.on('value', snap=>{
+    const answers = snap.val() || {};
+    // mark answered players
+    Object.keys(playersState).forEach(p=>{
+      playersState[p].answered = !!answers[p];
+    });
+    renderPlayers();
+    // if all players answered, and host hasn't scored yet, we still wait for host to write lastResults/current.correct
+  });
   // unlock button to allow user gesture to play audio if needed
   unlockBtn.addEventListener('click', () => {
     player.play().catch(()=>{});
@@ -93,6 +115,11 @@ function showQuestion(q){
     const leftMs = (q.endsAt || 0) - Date.now();
     const left = Math.max(0, Math.ceil(leftMs/1000));
     timeLeftEl.innerText = left;
+    // update progress bar (percentage elapsed)
+    const total = q.timeLimitMs || ((q.endsAt||0) - Date.now() + left*1000);
+    const remainingMs = Math.max(0, (q.endsAt || 0) - Date.now());
+    const pct = total > 0 ? Math.max(0, Math.min(100, Math.round((remainingMs/total)*100))) : 0;
+    if(progressBar) progressBar.style.width = pct + '%';
     if(left <= 0){
       clearInterval(timerInterval);
       timerInterval = null;
@@ -143,5 +170,32 @@ function showResults(res){
     html += `${pid}: ${r.correct ? 'ถูก' : 'ผิด'} (+${r.points})<br>`;
   });
   resultEl.innerHTML = html;
+  // also refresh players scoreboard from /scores
+  db.ref("rooms/"+currentRoom+"/scores").once('value').then(snap=>{
+    const scores = snap.val() || {};
+    Object.keys(playersState).forEach(p => {
+      playersState[p].score = scores[p] || 0;
+      playersState[p].answered = false; // reset for next round
+    });
+    renderPlayers();
+  }).catch(()=>{});
+}
+
+function renderPlayers(){
+  // playersState: { pid: { name?, score?, answered? } }
+  // find top score
+  let maxScore = -Infinity;
+  Object.keys(playersState).forEach(pid=>{
+    const s = playersState[pid] && playersState[pid].score ? playersState[pid].score : 0;
+    if(s > maxScore) maxScore = s;
+  });
+  const rows = Object.keys(playersState).map(pid=>{
+    const p = playersState[pid] || {};
+    const answered = p.answered ? '✅' : '⏳';
+    const score = p.score || 0;
+    const highlight = score === maxScore && maxScore > 0 ? 'ring-2 ring-yellow-400 animate-pulse' : '';
+    return `<div class="flex justify-between items-center py-1 ${highlight} px-2 rounded">${pid} <span>${answered}</span><span class="ml-4 font-bold">${score}</span></div>`;
+  });
+  playersListEl.innerHTML = `<strong>Players</strong><div class="mt-2 space-y-1">${rows.join('')}</div>`;
 }
 

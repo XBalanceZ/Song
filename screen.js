@@ -12,6 +12,7 @@ const statusEl = document.getElementById('status');
 const scoresEl = document.getElementById('scores');
 const timeLeftEl = document.getElementById('timeLeft');
 const player = document.getElementById('player');
+const screenProgress = document.getElementById('screenProgress');
 
 let timerInterval = null;
 let stopTimeout = null;
@@ -27,8 +28,16 @@ db.ref("rooms/"+room).on("value", snap => {
   // show scores (from /scores)
   scoresEl.innerHTML = "";
   if(d.scores){
+    // find top score
+    let max = -Infinity;
     Object.keys(d.scores).forEach(pid => {
-      scoresEl.innerHTML += `<li>${pid}: ${d.scores[pid]}</li>`;
+      const s = d.scores[pid] || 0;
+      if(s > max) max = s;
+    });
+    Object.keys(d.scores).forEach(pid => {
+      const s = d.scores[pid] || 0;
+      const highlight = (s === max && max>0) ? ' class="text-yellow-300 text-2xl animate-pulse"' : '';
+      scoresEl.innerHTML += `<li${highlight}>${pid}: ${s}</li>`;
     });
   }
 });
@@ -69,6 +78,11 @@ db.ref("rooms/"+room+"/current").on("value", snap => {
       timerInterval = null;
       // stop audio when time's up
       try{ player.pause(); }catch(e){}
+    }
+    // progress bar
+    if(screenProgress && q.timeLimitMs){
+      const pct = Math.max(0, Math.min(100, Math.round(((q.endsAt - Date.now())/q.timeLimitMs)*100)));
+      screenProgress.style.width = Math.max(0,pct) + '%';
     }
   }
   updateTimer();

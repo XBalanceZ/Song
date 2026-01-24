@@ -19,6 +19,15 @@
 <div class="mt-2">
   <img id="qrimg" class="hidden border rounded" />
 </div>
+<div class="mt-4 p-2 bg-white/5 rounded">
+  <h3 class="font-bold mb-2">Spotify preview (optional)</h3>
+  <input id="spotify" placeholder="Spotify track id (eg 3n3Ppam7vgaVa1iaRUc9Lp)" class="text-black p-2 rounded w-80">
+  <input id="spotifyToken" placeholder="Bearer token (optional)" class="text-black p-2 rounded w-80 mt-2">
+  <div class="mt-2">
+    <button onclick="fetchSpotifyPreviewAndSet()" class="bg-blue-600 px-3 py-2 rounded">Fetch preview and assign to next question</button>
+    <span id="spotifyInfo" class="ml-2"></span>
+  </div>
+</div>
 <button onclick="startQuiz()" class="bg-blue-600 px-4 py-2 rounded ml-2">Start Quiz</button>
 <button onclick="stopQuiz()" class="bg-red-500 px-4 py-2 rounded ml-2">Stop Quiz</button>
 <label class="ml-4">Time per Q:

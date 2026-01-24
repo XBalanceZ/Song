@@ -16,6 +16,10 @@
 </div>
 <!-- audio player (hidden controls, used to play the clip) -->
 <audio id="player" class="hidden" preload="auto"></audio>
+<!-- progress bar -->
+<div class="w-full h-4 bg-white/10 rounded mt-4 overflow-hidden">
+  <div id="screenProgress" class="h-4 bg-yellow-400 w-0 transition-all duration-200"></div>
+</div>
 <ul id="scores" class="mt-6 text-xl"></ul>
 <script src="screen.js"></script>
 </body>
