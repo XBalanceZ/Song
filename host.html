@@ -11,8 +11,14 @@
 </head>
 <body class="bg-gray-900 text-white p-6">
 <h1 class="text-4xl mb-4">🎛️ Host Control</h1>
-<input id="room" placeholder="Room Code" class="text-black p-2 rounded">
-<button onclick="createRoom()" class="bg-green-500 px-4 py-2 rounded ml-2">Create</button>
+<div class="flex items-center gap-2">
+  <input id="room" placeholder="Room Code" class="text-black p-2 rounded">
+  <button onclick="generateRoom()" class="bg-yellow-400 text-black px-3 py-2 rounded">Generate</button>
+  <button onclick="createRoom()" class="bg-green-500 px-4 py-2 rounded">Create</button>
+</div>
+<div class="mt-2">
+  <img id="qrimg" class="hidden border rounded" />
+</div>
 <button onclick="startQuiz()" class="bg-blue-600 px-4 py-2 rounded ml-2">Start Quiz</button>
 <button onclick="stopQuiz()" class="bg-red-500 px-4 py-2 rounded ml-2">Stop Quiz</button>
 <label class="ml-4">Time per Q:

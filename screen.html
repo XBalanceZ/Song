@@ -11,6 +11,11 @@
 <body class="bg-black text-white text-center p-10">
 <h1 class="text-5xl mb-4">🎶 SONGTRIVIA LIVE</h1>
 <h2 id="status" class="text-3xl text-yellow-400">รอ Host เริ่มเกม</h2>
+<div class="mt-4">
+  <span class="text-2xl">เวลาที่เหลือ: </span><span id="timeLeft" class="text-2xl text-red-400">--</span>
+</div>
+<!-- audio player (hidden controls, used to play the clip) -->
+<audio id="player" class="hidden" preload="auto"></audio>
 <ul id="scores" class="mt-6 text-xl"></ul>
 <script src="screen.js"></script>
 </body>

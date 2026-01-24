@@ -99,21 +99,70 @@ function showQuestion(q){
   document.getElementById('prompt').innerText = q.prompt;
   const choicesDiv = document.getElementById('choices');
   choicesDiv.innerHTML = '';
+  // build choice buttons
   q.choices.forEach((c, i) => {
     const btn = document.createElement('button');
-    btn.className = 'w-full bg-white text-black p-2 rounded';
+    btn.className = 'w-full bg-white text-black p-2 rounded text-left';
     btn.innerText = c;
+    btn.dataset.index = i;
     btn.onclick = () => submitAnswer(i);
     choicesDiv.appendChild(btn);
   });
-  // timer
+
+  // hide previous result area
+  const resultEl = document.getElementById('result');
+  if(resultEl) resultEl.innerHTML = '';
+
+  // timer display
   if(timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(()=> {
     const leftMs = q.endsAt - Date.now();
     const left = Math.max(0, Math.ceil(leftMs/1000));
     document.getElementById('timeLeft').innerText = left;
-    if(left<=0) clearInterval(timerInterval);
+    if(left<=0){
+      clearInterval(timerInterval);
+      // disable buttons when time's up
+      Array.from(choicesDiv.children).forEach(b => b.disabled = true);
+    }
   },250);
+
+  // If host has attached the 'correct' field (after scoring), reveal correct and show per-player results
+  if(q.correct !== undefined){
+    revealCorrect(q);
+  }
+}
+
+function revealCorrect(q){
+  const choicesDiv = document.getElementById('choices');
+  const correctIdx = q.correct;
+  Array.from(choicesDiv.children).forEach(btn => {
+    const idx = parseInt(btn.dataset.index, 10);
+    if(idx === correctIdx){
+      btn.classList.add('bg-green-400');
+    } else {
+      btn.classList.add('opacity-60');
+    }
+    btn.disabled = true;
+  });
+  // show result text (per-player) if available
+  const resultEl = document.getElementById('result') || (() => {
+    const el = document.createElement('div');
+    el.id = 'result';
+    el.className = 'mt-3 text-sm bg-white/5 p-2 rounded';
+    document.getElementById('questionArea').appendChild(el);
+    return el;
+  })();
+  // fetch lastResults from DB to show points (optional)
+  if(!currentRoom) return;
+  db.ref("rooms/"+currentRoom+"/lastResults").once('value').then(snap=>{
+    const res = snap.val() || {};
+    let html = '<strong>ผลคะแนนรอบนี้</strong><br>';
+    Object.keys(res).forEach(pid=>{
+      const r = res[pid];
+      html += `${pid}: ${r.correct ? 'ถูก' : 'ผิด'} (+${r.points})<br>`;
+    });
+    resultEl.innerHTML = html;
+  }).catch(()=>{});
 }
 
 function submitAnswer(choiceIndex){

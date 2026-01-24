@@ -56,7 +56,9 @@ function advanceQuestion(qtime){
     prompt: q.prompt,
     choices: q.choices,
     endsAt: questionEndTs,
-    timeLimitMs: qtime
+    timeLimitMs: qtime,
+    audio: q.audio || null,
+    clipStart: q.clipStart || 0
   });
   // clear previous answers
   db.ref("rooms/"+currentRoom+"/answers").set(null);
@@ -73,15 +75,56 @@ async function scoreQuestion(room, index, qtime){
   const scoresSnap = await db.ref("rooms/"+room+"/scores").once('value');
   const scores = scoresSnap.val() || {};
 
-  // compute per-player points based on answer time
+  // compute per-player points based on correctness and answer time
+  const results = {};
+  const correctPlayers = [];
   Object.keys(answers).forEach(pid => {
     const a = answers[pid];
     if(a.choice === undefined || a.answeredAt===undefined) return;
-    const delta = Math.max(0, questionEndTs - a.answeredAt); // ms remaining
-    const points = Math.ceil((delta / qtime) * 100); // scale to 0-100
-    scores[pid] = (scores[pid] || 0) + points;
+    const correct = (a.choice === q.answer);
+    let points = 0;
+    if(correct){
+      const delta = Math.max(0, questionEndTs - a.answeredAt); // ms remaining
+      const base = Math.ceil((delta / qtime) * 100); // 0-100
+      points = base;
+      correctPlayers.push({ pid, answeredAt: a.answeredAt });
+    }
+    results[pid] = { choice: a.choice, answeredAt: a.answeredAt, correct, points };
+  });
+
+  // bonus to fastest correct responder
+  if(correctPlayers.length > 0){
+    correctPlayers.sort((a,b)=>a.answeredAt - b.answeredAt);
+    const fastest = correctPlayers[0].pid;
+    const BONUS = 20;
+    results[fastest].points += BONUS;
+  }
+
+  // apply points to persistent scores
+  Object.keys(results).forEach(pid=>{
+    scores[pid] = (scores[pid] || 0) + (results[pid].points || 0);
   });
 
   await db.ref("rooms/"+room+"/scores").set(scores);
+  // write results for clients to show per-round outcome
+  await db.ref("rooms/"+room+"/lastResults").set(results);
+  // reveal correct answer in /current so controllers/screens can show it
+  await db.ref("rooms/"+room+"/current/correct").set(q.answer);
   await db.ref("rooms/"+room+"/status").set("Scored Q"+(index+1));
+}
+
+// --- Room helper: generate code + QR ---
+function generateRoom(){
+  const code = Math.random().toString(36).substr(2,5).toUpperCase();
+  document.getElementById('room').value = code;
+  updateQR(code);
+}
+
+function updateQR(code){
+  const url = location.origin + '/controller.html?room=' + encodeURIComponent(code);
+  const img = document.getElementById('qrimg');
+  if(img){
+    img.src = 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=' + encodeURIComponent(url);
+    img.classList.remove('hidden');
+  }
 }
