@@ -3,6 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Controller</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -16,7 +17,7 @@
 <input id="room" placeholder="Room Code" class="text-black p-2 rounded mb-2"><br>
 <input id="name" placeholder="ชื่อ" class="text-black p-2 rounded mb-4"><br>
 <div class="mb-4">
-  <button onclick="joinRoom()" class="bg-green-500 px-6 py-2 rounded mr-2">Join</button>
+  <button onclick="joinAndGo()" class="bg-green-500 px-6 py-2 rounded mr-2">Join</button>
   <button onclick="buzz()" class="bg-red-600 px-8 py-4 rounded-full text-2xl font-bold">🔴 Buzz</button>
 </div>
 <div id="questionArea" class="hidden mt-4 text-left w-96 mx-auto bg-white/5 p-4 rounded">

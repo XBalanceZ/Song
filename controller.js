@@ -94,6 +94,16 @@ function joinRoom(){
   alert('เข้าร่วมห้อง: '+r);
 }
 
+// Join then redirect to the mobile player page
+function joinAndGo(){
+  const r = document.getElementById('room').value;
+  const n = document.getElementById('name').value || ('P'+Math.floor(Math.random()*1000));
+  if(!r){ alert('กรุณากรอกรหัสห้องก่อน Join'); return; }
+  // store name locally and navigate
+  sessionStorage.setItem('playerName', n);
+  const url = 'controller_play.html?room='+encodeURIComponent(r)+'&name='+encodeURIComponent(n);
+  window.location.href = url;
+}
 function showQuestion(q){
   document.getElementById('questionArea').classList.remove('hidden');
   document.getElementById('prompt').innerText = q.prompt;

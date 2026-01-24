@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Player — SongTrivia</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <!-- keep html simple for mobile -->
+  <style>
+    body { -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-black text-white min-h-screen p-4">
+  <div class="max-w-md mx-auto">
+    <h1 class="text-3xl font-bold text-center mb-4">🎧 SongTrivia — Player</h1>
+    <div id="info" class="text-center mb-2"></div>
+    <div id="promptArea" class="hidden bg-white/5 p-4 rounded mb-3">
+      <div id="prompt" class="text-lg mb-2"></div>
+      <div class="mb-2">เวลาเหลือ: <span id="timeLeft" class="text-red-400 font-bold">--</span>s</div>
+      <audio id="player" preload="auto"></audio>
+      <div id="tapToPlay" class="mt-2 text-center">
+        <button id="unlockBtn" class="bg-yellow-400 text-black px-4 py-3 rounded text-lg">แตะเพื่อเล่นเสียง</button>
+      </div>
+      <div id="choices" class="grid gap-3 mt-3"></div>
+      <div id="result" class="mt-3 text-sm bg-white/5 p-2 rounded hidden"></div>
+    </div>
+    <div id="waiting" class="text-center mt-10">
+      <p class="text-lg">รอ Host เริ่มเกม...</p>
+      <p class="text-sm text-gray-400 mt-2">หากยังไม่อยู่ในห้อง โปรดกลับไปหน้าสมัคร</p>
+    </div>
+  </div>
+  <script src="controller_play.js"></script>
+</body>
+</html>
+
