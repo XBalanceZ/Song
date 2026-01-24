@@ -67,3 +67,60 @@ function parseRoomFromText(text){
     return text.trim();
   }
 }
+
+// --- Quiz player logic ---
+let playerId = null;
+let currentRoom = null;
+let currentQuestionListener = null;
+let timerInterval = null;
+
+function joinRoom(){
+  const r = document.getElementById('room').value;
+  const n = document.getElementById('name').value || ('P'+Math.floor(Math.random()*1000));
+  if(!r){ alert('กรุณากรอกรหัสห้องก่อน Join'); return; }
+  playerId = n;
+  currentRoom = r;
+  // write player entry
+  db.ref("rooms/"+r+"/players/"+playerId).set({ name: n });
+  // listen for current question
+  if(currentQuestionListener) currentQuestionListener.off();
+  const ref = db.ref("rooms/"+r+"/current");
+  ref.on('value', snap => {
+    const q = snap.val();
+    if(!q){ document.getElementById('questionArea').classList.add('hidden'); return; }
+    showQuestion(q);
+  });
+  currentQuestionListener = ref;
+  alert('เข้าร่วมห้อง: '+r);
+}
+
+function showQuestion(q){
+  document.getElementById('questionArea').classList.remove('hidden');
+  document.getElementById('prompt').innerText = q.prompt;
+  const choicesDiv = document.getElementById('choices');
+  choicesDiv.innerHTML = '';
+  q.choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'w-full bg-white text-black p-2 rounded';
+    btn.innerText = c;
+    btn.onclick = () => submitAnswer(i);
+    choicesDiv.appendChild(btn);
+  });
+  // timer
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(()=> {
+    const leftMs = q.endsAt - Date.now();
+    const left = Math.max(0, Math.ceil(leftMs/1000));
+    document.getElementById('timeLeft').innerText = left;
+    if(left<=0) clearInterval(timerInterval);
+  },250);
+}
+
+function submitAnswer(choiceIndex){
+  if(!currentRoom || !playerId) { alert('กรุณา Join ก่อนตอบ'); return; }
+  const payload = { choice: choiceIndex, answeredAt: Date.now() };
+  db.ref("rooms/"+currentRoom+"/answers/"+playerId).set(payload);
+  // disable choices UI
+  const choicesDiv = document.getElementById('choices');
+  Array.from(choicesDiv.children).forEach(b => b.disabled = true);
+}
