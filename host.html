@@ -1,0 +1,24 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Host Panel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="songs.js"></script>
+</head>
+<body class="bg-gray-900 text-white p-6">
+<h1 class="text-4xl mb-4">🎛️ Host Control</h1>
+<input id="room" placeholder="Room Code" class="text-black p-2 rounded">
+<button onclick="createRoom()" class="bg-green-500 px-4 py-2 rounded ml-2">Create</button>
+<button onclick="startQuiz()" class="bg-blue-600 px-4 py-2 rounded ml-2">Start Quiz</button>
+<button onclick="stopQuiz()" class="bg-red-500 px-4 py-2 rounded ml-2">Stop Quiz</button>
+<label class="ml-4">Time per Q:
+  <input id="qtime" type="number" value="15" class="text-black w-16 p-1 rounded ml-2">s
+</label>
+<p id="info" class="mt-4"></p>
+<script src="host.js"></script>
+</body>
+</html>
