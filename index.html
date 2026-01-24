@@ -1,23 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Thai SongTrivia - Host</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<title>🎵 Songtrivia PRO</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<h1>🎵 Thai SongTrivia (HOST)</h1>
-<div id="room"></div>
-<button onclick="startRound()">▶️ เริ่มรอบ</button>
-<div id="timer">--</div>
-<div id="player"></div>
-<div id="players"></div>
-
-<script src="firebase.js"></script>
-<script src="songs.js"></script>
-<script src="https://www.youtube.com/iframe_api"></script>
-<script src="host.js"></script>
+<body class="bg-gradient-to-br from-purple-900 to-pink-600 min-h-screen flex items-center justify-center text-white">
+<div class="text-center">
+  <h1 class="text-6xl font-extrabold mb-6">🎤 SONGTRIVIA</h1>
+  <p class="mb-6 text-xl">เกมทายเพลงสไตล์งานอีเวนต์</p>
+  <a href="screen.html" class="px-6 py-3 bg-white text-purple-700 rounded-xl font-bold m-2">🖥️ จอใหญ่</a>
+  <a href="controller.html" class="px-6 py-3 bg-white text-purple-700 rounded-xl font-bold m-2">📱 ผู้เล่น</a>
+  <a href="host.html" class="px-6 py-3 bg-yellow-400 text-black rounded-xl font-bold m-2">🎛️ Host</a>
+</div>
 </body>
 </html>
